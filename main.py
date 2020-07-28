@@ -1,31 +1,33 @@
 import json
 import os
 import numpy as np
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2' 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import tensorflow as tf
 from flask import Flask, jsonify, request, Response
 from flask_restful import reqparse, abort, Api, Resource
 
 import model, sample, encoder
 
-
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ["KMP_BLOCKTIME"] = "1"
 os.environ["KMP_SETTINGS"] = "1"
 os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
 
-def interact_model(model_name='model', seed=99, nsamples=5, batch_size=5,
-                    length=8, temperature=0, top_k=10, top_p=.85, models_dir=''):
+def interact_model(model_name='t-model', seed=99, nsamples=15, batch_size=15,
+                    length=12, temperature=0, top_k=10, top_p=.85, models_dir=''):
 
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
-
+    # nsamples=5, batch_size=5
     if batch_size is None:
         batch_size = 1
     assert nsamples % batch_size == 0
 
-    enc = encoder.get_encoder(model_name, models_dir)
     hparams = model.default_hparams()
+    # n_vocab=50257, n_ctx=1024, n_embd=1024, n_head=16, n_layer=24
     with open(os.path.join(models_dir, model_name, 'hparams.json')) as f:
         hparams.override_from_dict(json.load(f))
+
+    enc = encoder.get_encoder(model_name, models_dir)
 
     if length is None:
         length = hparams.n_ctx // 2
@@ -37,7 +39,7 @@ def interact_model(model_name='model', seed=99, nsamples=5, batch_size=5,
                        allow_soft_placement=True, gpu_options=gpu_options)
 
     with tf.Session(graph=tf.Graph(), config=config) as sess:
-
+        # 5* none
         context = tf.placeholder(tf.int32, [batch_size, None])
         np.random.seed(seed)
         tf.set_random_seed(seed)
@@ -48,6 +50,13 @@ def interact_model(model_name='model', seed=99, nsamples=5, batch_size=5,
             context=context,
             batch_size=batch_size,
             temperature=temperature, top_k=top_k, top_p=top_p
+        )
+
+        gettop = sample.get_top(
+            hparams=hparams, length=length,
+            context=context,
+            batch_size=batch_size,
+            top_k=top_k, top_p=top_p
         )
 
         saver = tf.train.Saver()
@@ -66,9 +75,10 @@ def interact_model(model_name='model', seed=99, nsamples=5, batch_size=5,
                 predictions = []
 
                 for _ in range(nsamples // batch_size):
-
+                    # tokens* batch_size
                     feed_dict = {context: [context_tokens for _ in range(batch_size)]}
-                    out = sess.run(output, feed_dict=feed_dict)[:, len(context_tokens):]
+                    # word after tokens
+                    out = sess.run(gettop, feed_dict=feed_dict)[:, len(context_tokens):] # fill in context to sample
 
                     for i in range(batch_size):
                         generated += 1
