@@ -1,0 +1,47 @@
+name: Python Test
+on:
+  push:
+    branches:
+    - *
+  pull_request:
+    branches-ignore:
+    - release
+
+# download model
+# build docker
+jobs:
+  build:
+    name: testing
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+    - name: Python Style Checker
+      uses: andymckay/pycodestyle-action@0.1.3
+jobs:
+  download-model:
+    name: download-model
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: get model
+      uses:
+jobs:
+  docker-build:
+    name: build-docker
+    runs-on: ubuntu-latest
+    needs: [build, download-model]
+    steps:
+    - uses: actions/checkout@v2
+    - name: docker-build
+      uses: docker/build-push-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+        repository: ${{ secrets.DOCKER_USERNAME }}/dtp-tensorflow
+        tag_with_ref: true
+        path: ../../docker
+        push: true
+    - name: upload-to-dockerHub
