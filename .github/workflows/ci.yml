@@ -32,7 +32,7 @@ jobs:
   docker-build:
     name: build-docker
     runs-on: ubuntu-latest
-    needs: [build, download-model]
+    needs: build
     steps:
     - uses: actions/checkout@v2
     - name: docker-build
@@ -44,4 +44,4 @@ jobs:
         tag_with_ref: true
         path: ../../docker
         push: true
-    - name: upload-to-dockerHub
+    #- name: upload-to-dockerHub
