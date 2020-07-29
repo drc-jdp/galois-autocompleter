@@ -9,8 +9,6 @@ on:
     branches-ignore:
     - release
 
-# download model
-# build docker
 jobs:
   build:
     name: testing
@@ -37,4 +35,3 @@ jobs:
         build_args: DOWNLOAD_MODEL=gpt-2
         tag_with_ref: true
         push: true
-    #- name: upload-to-dockerHub
