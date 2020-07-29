@@ -40,6 +40,5 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
         repository: ${{ secrets.DOCKER_USERNAME }}/dtp-tensorflow
         tag_with_ref: true
-        path: docker
         push: true
     #- name: upload-to-dockerHub
