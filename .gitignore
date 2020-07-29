@@ -132,3 +132,6 @@ dmypy.json
 **/.DS_Store
 .vscode/
 img/
+docker.sh
+github.sh
+docker/

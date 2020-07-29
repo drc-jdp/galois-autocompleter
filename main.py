@@ -13,7 +13,7 @@ os.environ["KMP_BLOCKTIME"] = "1"
 os.environ["KMP_SETTINGS"] = "1"
 os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
 
-def interact_model(model_name='t-model', seed=99, nsamples=15, batch_size=15,
+def interact_model(model_name='model', seed=99, nsamples=15, batch_size=15,
                     length=12, temperature=0, top_k=10, top_p=.85, models_dir=''):
 
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
