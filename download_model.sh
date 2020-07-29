@@ -1,4 +1,4 @@
-if [ -z "$1" ];
+if [ "$1" -eq "" ];
 then
     curl http://storage.googleapis.com/gpt-2/models/117M/checkpoint > model/checkpoint
     curl http://storage.googleapis.com/gpt-2/models/117M/encoder.json > model/encoder.json
@@ -9,4 +9,5 @@ then
     curl http://storage.googleapis.com/gpt-2/models/117M/model.ckpt.index > model/model.ckpt.index
 else 
     echo "aaaaaaaa"
+    echo "$1"
 fi
