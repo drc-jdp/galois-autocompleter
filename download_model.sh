@@ -1,4 +1,4 @@
-if [ "$1" -eq "gpt-2" ] || [ -z "$1" ]; then
+if [ "$1" = "gpt-2" ] || [ -z "$1" ]; then
     curl http://storage.googleapis.com/gpt-2/models/117M/checkpoint > model/checkpoint
     curl http://storage.googleapis.com/gpt-2/models/117M/encoder.json > model/encoder.json
     curl http://storage.googleapis.com/gpt-2/models/117M/hparams.json > model/hparams.json
