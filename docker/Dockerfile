@@ -1,5 +1,5 @@
-FROM tensorflow/tensorflow:1.15.2-gpu-py3-jupyter
-# FROM ubuntu:18.04
+# FROM tensorflow/tensorflow:1.15.2-gpu-py3-jupyter
+FROM ubuntu:18.04
 
 RUN apt-get update 
 

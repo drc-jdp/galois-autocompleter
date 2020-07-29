@@ -2,7 +2,7 @@ name: Python Test
 on:
   push:
     branches:
-    - *
+    - master
   pull_request:
     branches-ignore:
     - release
