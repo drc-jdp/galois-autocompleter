@@ -131,12 +131,7 @@ def get_top(*, hparams, length, start_token=None, batch_size=None, context=None,
         def body(past, prev, output):
             next_outputs = step(hparams, prev, past=past)
             logits = next_outputs['logits'][:, -1, :]  / tf.to_float(1)
-
-            # logits = top_p_logits(logits, p=top_p)
-            # if top_p:
-            #   logits = top_p_logits(logits, p=top_p)
-            # else:
-            #     logits = top_k_logits(logits, k=top_k)
+            
             num_for_pick = batch_size // num_for_each +1
             if output == context :
                 # 1 * num_for_pick
