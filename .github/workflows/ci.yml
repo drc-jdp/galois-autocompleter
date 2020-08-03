@@ -2,7 +2,7 @@ name: Python Test
 on:
   push:
     branches:
-    - master
+    - [master, sftp]
     tags:
       - v1.*
   pull_request:
