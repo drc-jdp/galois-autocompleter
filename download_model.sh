@@ -7,7 +7,11 @@ download_model()
 }
 
 if [ -z "$1" ]; then
-    echo "please give env variable to docker"
+    if [ -f "model/checkpoint" ]; then
+        echo "model exist"
+    else
+        echo "please give env variable to docker"
+    fi
 elif [ "$1" = "gpt-2" ]; then
     curl http://storage.googleapis.com/gpt-2/models/117M/checkpoint > model/checkpoint
     curl http://storage.googleapis.com/gpt-2/models/117M/encoder.json > model/encoder.json
