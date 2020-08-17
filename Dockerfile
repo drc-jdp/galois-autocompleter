@@ -1,9 +1,10 @@
 FROM tensorflow/tensorflow:1.15.2-gpu-py3-jupyter
-ARG DOWNLOAD_MODEL
+ARG DEFAULT_DOWNLOAD_MODEL
+ENV DOWNLOAD_MODEL=${DEFAULT_DOWNLOAD_MODEL}
 
 RUN apt-get update 
 RUN apt-get install -y openssh-server
-RUN apt-get install -y vsftpd
+#RUN apt-get install -y vsftpd
 RUN apt-get install -y net-tools
 RUN apt-get install -y vim
 RUN apt-get install -y sudo
@@ -43,7 +44,6 @@ RUN mkdir model
 COPY download_model.sh .
 # if nothing input, download model from 
 # https://medium.com/@ngwaifoong92/beginners-guide-to-retrain-gpt-2-117m-to-generate-custom-text-content-8bb5363d8b7f
-RUN /bin/bash download_model.sh ${DOWNLOAD_MODEL:-} 
 
 EXPOSE 3030
-CMD ["/bin/bash", "/bin/boot.sh"]
+CMD /bin/bash /bin/boot.sh ${DOWNLOAD_MODEL:-} 
