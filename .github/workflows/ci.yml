@@ -3,6 +3,7 @@ on:
   push:
     branches:
     - master
+    - sftp
     tags:
       - v1.*
   pull_request:
