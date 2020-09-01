@@ -13,20 +13,21 @@ os.environ["KMP_BLOCKTIME"] = "1"
 os.environ["KMP_SETTINGS"] = "1"
 os.environ["KMP_AFFINITY"] = "granularity=fine,verbose,compact,1,0"
 
+
+def get_hparam(model_name):
+    hparams = model.default_hparams()
+    with open(os.path.join(model_name, 'hparams.json')) as f:
+        hparams.override_from_dict(json.load(f))
+    return hparams
+
+
 def interact_model(model_name='model', seed=99, nsamples=15, batch_size=15,
                     length=12, temperature=0, top_k=10, top_p=.85, models_dir=''):
 
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
-    # nsamples=5, batch_size=5
-    if batch_size is None:
-        batch_size = 1
     assert nsamples % batch_size == 0
 
-    hparams = model.default_hparams()
-    # n_vocab=50257, n_ctx=1024, n_embd=1024, n_head=16, n_layer=24
-    with open(os.path.join(models_dir, model_name, 'hparams.json')) as f:
-        hparams.override_from_dict(json.load(f))
-
+    hparams = get_hparam(model_name)
     enc = encoder.get_encoder(model_name, models_dir)
 
     if length is None:
@@ -60,7 +61,7 @@ def interact_model(model_name='model', seed=99, nsamples=15, batch_size=15,
         )
 
         saver = tf.train.Saver()
-        ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
+        ckpt = tf.train.latest_checkpoint(os.path.join(model_name))
         saver.restore(sess, ckpt)
 
         class Autocomplete(Resource):

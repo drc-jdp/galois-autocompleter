@@ -3,29 +3,29 @@ ARG DEFAULT_DOWNLOAD_MODEL
 ENV DOWNLOAD_MODEL=${DEFAULT_DOWNLOAD_MODEL}
 
 RUN apt-get update 
-RUN apt-get install -y openssh-server
-RUN apt-get install -y net-tools
-RUN apt-get install -y vim
-RUN apt-get install -y sudo
-RUN apt-get install -y --no-install-recommends curl
+# RUN apt-get install -y openssh-server
+# RUN apt-get install -y net-tools
+# RUN apt-get install -y vim
+# RUN apt-get install -y sudo
+# RUN apt-get install -y --no-install-recommends curl
 
 WORKDIR /
 
-# build SSH server
-RUN mkdir /var/run/sshd
-RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
-RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
-ENV NOTVISIBLE "in users profile"
-RUN echo "export VISIBLE=now" >> /etc/profile 
-# sftp server
-RUN sed -i '$aMatch group tensorflow\nAllowTcpForwarding yes' /etc/ssh/sshd_config
-RUN sed -i 's\^Subsys.*$\Subsystem sftp internal-sftp /usr/lib/openssh/sftp-server\ ' /etc/ssh/sshd_config
-EXPOSE 22 
+# # build SSH server
+# RUN mkdir /var/run/sshd
+# RUN sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin no/' /etc/ssh/sshd_config
+# RUN sed 's@session\s*required\s*pam_loginuid.so@session optional pam_loginuid.so@g' -i /etc/pam.d/sshd
+# ENV NOTVISIBLE "in users profile"
+# RUN echo "export VISIBLE=now" >> /etc/profile 
+# # sftp server
+# RUN sed -i '$aMatch group tensorflow\nAllowTcpForwarding yes' /etc/ssh/sshd_config
+# RUN sed -i 's\^Subsys.*$\Subsystem sftp internal-sftp /usr/lib/openssh/sftp-server\ ' /etc/ssh/sshd_config
+# EXPOSE 22 
 
 # boot up and setting files
-COPY boot.sh /bin
-COPY .setenv /
-RUN cat .setenv >> /etc/bash.bashrc
+COPY boot.sh /usr/bin
+COPY .setenv /usr/bin
+RUN cat /usr/bin/.setenv >> /etc/bash.bashrc
 
 # user tensorflow
 RUN useradd -m -G sudo -s /bin/bash -d /home/tensorflow tensorflow
@@ -44,4 +44,4 @@ RUN mkdir model
 COPY download_model.sh .
 # if nothing input, download model from 
 # https://medium.com/@ngwaifoong92/beginners-guide-to-retrain-gpt-2-117m-to-generate-custom-text-content-8bb5363d8b7f
-CMD /bin/bash /bin/boot.sh ${DOWNLOAD_MODEL:-} 
+CMD /bin/bash /usr/bin/boot.sh ${DOWNLOAD_MODEL:-} 
