@@ -15,8 +15,12 @@ jobs:
     name: testing
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - name: curl
+      uses: curl -v 140.112.48.79:8080
+    - name: checkout
+      uses: actions/checkout@v2
+    - name: setup python
+      uses: actions/setup-python@v2
       with:
         python-version: '3.x'
     #- name: Python Style Checker
