@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: curl
-      uses: curl -v 140.112.48.79:8080
+      run:  curl -v 140.112.48.79:8080
     - name: checkout
       uses: actions/checkout@v2
     - name: setup python
