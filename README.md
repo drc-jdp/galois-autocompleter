@@ -11,9 +11,10 @@ sudo docker run -id -p 2222:22 -p 3030:3030 -e DOWNLOAD_MODEL={url} \
 -v {_local_dir_to_save_your_model_}:/home/tensorflow/galois/model \
 --name dtp yqchenee/dtp-tensorflow:{tag}
 ```
-```
+```sh
 sudo docker exec -it dtp bash
 ```
+```sh
 curl -X POST   http://localhost:3030/autocomplete   -H 'Content-Type: application/json'   -d '{"text":"your text"}'
 ```
 # TODO
